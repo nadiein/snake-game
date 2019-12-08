@@ -1,0 +1,21 @@
+.grid-wrapper {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: 640px;
+    height: 630px;
+    // border: 1px solid #ccc;
+}
+
+.grid-cell {
+    width: 20px;
+    height: 20px;
+    border: 1px solid #ccc;
+    font-size: 5px;
+
+    // &:not(:last-child) {
+    //     border-right: 1px solid #ccc;
+    // }
+}
