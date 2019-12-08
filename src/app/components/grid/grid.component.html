@@ -2,4 +2,9 @@
     <div
         class="grid-cell"
         *ngFor="let cell of grid">{{'X:' + cell.x + 'Y:' + cell.y}}</div>
+        <snake
+            style="position: absolute;"
+            [style.left.px]="snake.left"
+            [style.top.px]="snake.top"
+        ></snake>
 </div>

@@ -3,11 +3,13 @@ import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
 import { GridComponent } from './components/grid/grid.component';
+import { SnakeComponent } from './components/snake/snake.component';
 
 @NgModule({
     declarations: [
         AppComponent,
-        GridComponent
+        GridComponent,
+        SnakeComponent
     ],
     imports: [
         BrowserModule
