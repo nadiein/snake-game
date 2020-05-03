@@ -12,6 +12,9 @@ export class GridComponent implements OnInit {
 
     grid:GridCreator;
     snake:Snake;
+    timer:any;
+    stepsMade:number = 0;
+    timeGapToIncrDifficalty:number = 15;
 
     constructor() { }
     
@@ -26,22 +29,30 @@ export class GridComponent implements OnInit {
 
     createSnakeStartPosition():Snake {
         this.snake = new Snake();
-        this.snake.nose = Utils.getRandomPositionCoords(29);
+        this.snake.head = Utils.getRandomPositionCoords(29);
         return this.snake;
     }
 
     @HostListener('window:keyup', ['$event'])
     onKeyUp(event) {
         if (event.keyCode == 38) { // Up
-            this.snake.direction = Direction.UP;
+            this.snake.currentMovingDirection = Direction.UP;
         } else if (event.keyCode == 40) { // Down
-            this.snake.direction = Direction.DOWN;
+            this.snake.currentMovingDirection = Direction.DOWN;
         } else if (event.keyCode == 37) { // Left
-            this.snake.direction = Direction.LEFT;
+            this.snake.currentMovingDirection = Direction.LEFT;
         } else if (event.keyCode == 39) { // Right
-            this.snake.direction = Direction.RIGHT;
+            this.snake.currentMovingDirection = Direction.RIGHT;
         }
-        this.snake.move();
+        clearInterval(this.timer);
+        this.timer = setInterval(_ => {
+            this.stepsMade++;
+            this.snake.move();
+
+            if (this.stepsMade == this.timeGapToIncrDifficalty) {
+                this.timeGapToIncrDifficalty += this.timeGapToIncrDifficalty;
+            }
+        }, 1000);
     }
 
 }

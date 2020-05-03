@@ -4,7 +4,7 @@
         *ngFor="let cell of grid">{{'X:' + cell.x + 'Y:' + cell.y}}</div>
         <snake
             style="position: absolute;"
-            [style.left.px]="snake.left"
-            [style.top.px]="snake.top"
+            [style.left.px]="snake.posLeft"
+            [style.top.px]="snake.posTop"
         ></snake>
 </div>
