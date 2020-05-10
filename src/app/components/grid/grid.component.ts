@@ -1,7 +1,12 @@
-import { Component, HostListener, OnInit } from '@angular/core';
-import { Direction, Snake } from '../snake/snake.model';
+import { Component, OnInit } from '@angular/core';
+import 'konva';
+import { Stage, StageConfig } from 'konva/types/Stage';
+import { Layer } from 'konva/types/Layer';
+import { EventType, EventVo } from './grid.model';
+import { Snake } from '../snake/snake.model';
 import { Utils } from '../utils/utils';
-import { GridCreator } from './grid.model';
+
+declare const Konva:any;
 
 @Component({
     selector: 'grid',
@@ -9,50 +14,89 @@ import { GridCreator } from './grid.model';
     styleUrls: ['./grid.component.scss']
 })
 export class GridComponent implements OnInit {
-
-    grid:GridCreator;
-    snake:Snake;
-    timer:any;
-    stepsMade:number = 0;
-    timeGapToIncrDifficalty:number = 15;
+    stage:Stage;
+    config:StageConfig = {
+        container: 'js-konva-stage',
+        width: 600,
+        height: 600
+    };
+    tempLayer:Layer;
+    drawingLayer:Layer;
+    gridLayer:Layer;
+    snake:Snake = new Snake();
 
     constructor() { }
     
     ngOnInit() {
-        this.grid = this.createGrid(30);
-        this.createSnakeStartPosition();
+        this.stage = new Konva.Stage(this.config);
+        //Init layers
+        this.tempLayer = new Konva.Layer();
+        this.drawingLayer = new Konva.Layer();
+        this.gridLayer = new Konva.Layer();
+        this.stage.add(this.tempLayer);
+        this.stage.add(this.drawingLayer);
+        this.stage.add(this.gridLayer);
+
+        this.drawGird();
+        this.drawSnake();
+        this.initStageEvents();
     }
 
-    createGrid(cells:number):GridCreator {
-        return GridCreator.buildGrid(cells);
-    }
+    drawGird() {
+        this.gridLayer.destroyChildren();
+        let width = 600;
+        let height = 600;
+        let step = 30;
+        let linesOnAxisX = Math.ceil(width - step / step);
+        let linesOnAxisY = Math.ceil(height - step / step);
+        let stroke = '#ddd';
 
-    createSnakeStartPosition():Snake {
-        this.snake = new Snake();
-        this.snake.head = Utils.getRandomPositionCoords(29);
-        return this.snake;
-    }
-
-    @HostListener('window:keyup', ['$event'])
-    onKeyUp(event) {
-        if (event.keyCode == 38) { // Up
-            this.snake.currentMovingDirection = Direction.UP;
-        } else if (event.keyCode == 40) { // Down
-            this.snake.currentMovingDirection = Direction.DOWN;
-        } else if (event.keyCode == 37) { // Left
-            this.snake.currentMovingDirection = Direction.LEFT;
-        } else if (event.keyCode == 39) { // Right
-            this.snake.currentMovingDirection = Direction.RIGHT;
+        for (let i = 0; i < linesOnAxisX; i++) {
+            this.gridLayer.add(new Konva.Line({
+                points: [Math.ceil(i * step), 0, Math.ceil(i * step), height],
+                stroke: stroke,
+                strokeWidth: 1,
+            }));
         }
-        clearInterval(this.timer);
-        this.timer = setInterval(_ => {
-            this.stepsMade++;
-            this.snake.move();
 
-            if (this.stepsMade == this.timeGapToIncrDifficalty) {
-                this.timeGapToIncrDifficalty += this.timeGapToIncrDifficalty;
-            }
-        }, 1000);
+        for (let j = 0; j < linesOnAxisY; j++) {
+            this.gridLayer.add(new Konva.Line({
+                points: [0, Math.ceil(j * step), width, Math.ceil(j * step)],
+                stroke: stroke,
+                strokeWidth: 1,
+            }));
+        }
+
+        this.gridLayer.draw();
+    }
+
+    drawSnake() {
+        this.snake.x = Utils.getRandomPositionCoords(570);
+        this.snake.y = Utils.getRandomPositionCoords(570);
+        this.drawingLayer.add(this.snake.rect);
+        this.drawingLayer.batchDraw();
+        console.log(this.snake)
+    }
+
+    initStageEvents() {
+        this.stage.on('mousedown', e => this.dispatchEvent(e, EventType.MOUSEDOWN))
+        this.stage.on('keydown', e => this.dispatchEvent(e, EventType.KEYDOWN))
+    }
+
+    dispatchEvent(e:any, type:EventType) {
+        let eventVo = new EventVo();
+        eventVo.event = e;
+        eventVo.type = type;
+        this.mouseDownEvent(eventVo);
+        this.keyDownEvent(eventVo);
+    }
+
+    mouseDownEvent(event:EventVo) {
+        console.log(event)
+    }
+
+    keyDownEvent(event:EventVo) {
+        console.log(event)
     }
 
 }

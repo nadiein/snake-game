@@ -1,41 +1,22 @@
-import { Coords } from '../utils/utils';
+import 'konva';
+import { Rect } from 'konva/types/shapes/Rect';
+
+declare const Konva:any;
 
 export class Snake {
+    _rect:Rect = new Konva.Rect();
+    _x:number;
+    _y:number;
+    width:number = 30;
+    height:number = 30;
     length:number = 1;
-    tail:Coords;
-    _head:Coords; // random start position;
-    body:Coords[];
-    posTop:number;
-    posLeft:number;
-    currentMovingDirection:Direction;
 
-    get head():Coords {
-        return this._head;
-    }
+    get rect():Rect { return this._rect.setAttrs({x:this._x, y:this._y, width:this.width, height:this.height, fill:'#ddd'}) }
 
-    set head(coords:Coords) {
-        this._head = coords;
-        this.getPosition();
-    }
-
-    getPosition() {
-        let baseWidth = 20 + 2; // 2 is border thick between grids. Could be removed after grid lines fix in css
-        this.posTop = this.head.y > 0 ? baseWidth * (this.head.y - 1) + 1 : 1;
-        this.posLeft = this.head.x > 0 ? baseWidth * (this.head.x - 1) + 1 : 1;
-    }
-
-    move() {
-        if (this.currentMovingDirection == Direction.UP) { // Up
-            this.head.y -= 1;
-        } else if (this.currentMovingDirection == Direction.DOWN) { // Down
-            this.head.y += 1;
-        } else if (this.currentMovingDirection == Direction.LEFT) { // Left
-            this.head.x -= 1;
-        } else if (this.currentMovingDirection == Direction.RIGHT) { // Right
-            this.head.x += 1;
-        }
-        this.getPosition();
-    }
+    get x():number { return this._x }
+    set x(value:number) { this._x = value }
+    get y():number { return this._y }
+    set y(value:number) { this._y = value }
 }
 
 export enum Direction {
