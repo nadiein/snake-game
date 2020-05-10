@@ -44,9 +44,9 @@ export class GridComponent implements OnInit {
 
     drawGird() {
         this.gridLayer.destroyChildren();
-        let width = 600;
-        let height = 600;
-        let step = 30;
+        let width = Utils.FIELD_SIZE;
+        let height = Utils.FIELD_SIZE;
+        let step = Utils.GRID_SIZE;
         let linesOnAxisX = Math.ceil(width - step / step);
         let linesOnAxisY = Math.ceil(height - step / step);
         let stroke = '#ddd';
@@ -71,11 +71,10 @@ export class GridComponent implements OnInit {
     }
 
     drawSnake() {
-        this.snake.x = Utils.getRandomPositionCoords(570);
-        this.snake.y = Utils.getRandomPositionCoords(570);
+        this.snake.x = Utils.getRandomPositionCoords(20).x;
+        this.snake.y = Utils.getRandomPositionCoords(20).y;
         this.drawingLayer.add(this.snake.rect);
         this.drawingLayer.batchDraw();
-        console.log(this.snake)
     }
 
     initStageEvents() {
