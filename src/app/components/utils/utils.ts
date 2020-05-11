@@ -18,3 +18,7 @@ export class Coords {
     x:number = 0;
     y:number = 0;
 }
+
+export enum DirectionType {
+    UP, DOWN, LEFT, RIGHT
+}

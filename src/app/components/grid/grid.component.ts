@@ -1,17 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef, HostListener } from '@angular/core';
 import 'konva';
 import { Stage, StageConfig } from 'konva/types/Stage';
 import { Layer } from 'konva/types/Layer';
 import { EventType, EventVo } from './grid.model';
 import { Snake } from '../snake/snake.model';
-import { Utils } from '../utils/utils';
+import { Utils, DirectionType } from '../utils/utils';
 
 declare const Konva:any;
 
 @Component({
     selector: 'grid',
     templateUrl: './grid.component.html',
-    styleUrls: ['./grid.component.scss']
+    styleUrls: ['./grid.component.scss'],
+    host: { '(document:keydown)': 'keyDownEvent($event)' }
 })
 export class GridComponent implements OnInit {
     stage:Stage;
@@ -25,7 +26,7 @@ export class GridComponent implements OnInit {
     gridLayer:Layer;
     snake:Snake = new Snake();
 
-    constructor() { }
+    constructor(private elRef:ElementRef) { }
     
     ngOnInit() {
         this.stage = new Konva.Stage(this.config);
@@ -79,7 +80,6 @@ export class GridComponent implements OnInit {
 
     initStageEvents() {
         this.stage.on('mousedown', e => this.dispatchEvent(e, EventType.MOUSEDOWN))
-        this.stage.on('keydown', e => this.dispatchEvent(e, EventType.KEYDOWN))
     }
 
     dispatchEvent(e:any, type:EventType) {
@@ -91,11 +91,21 @@ export class GridComponent implements OnInit {
     }
 
     mouseDownEvent(event:EventVo) {
-        console.log(event)
+        // console.log(event)
     }
 
-    keyDownEvent(event:EventVo) {
-        console.log(event)
+    keyDownEvent(event:any) {
+        console.log(event.event)
+        switch (event.keyCode) {
+            case 38: this.snakeMove(DirectionType.UP); break;
+            case 40: this.snakeMove(DirectionType.DOWN); break;
+            case 37: this.snakeMove(DirectionType.LEFT); break;
+            case 39: this.snakeMove(DirectionType.RIGHT); break;
+        }
+    }
+
+    snakeMove(direction:DirectionType) {
+        console.log(direction)
     }
 
 }
