@@ -95,25 +95,25 @@ export class GridComponent implements OnInit {
     }
 
     keyDownEvent(event:any) {
-        switch (event.keyCode) {
-            case 38: Utils.throttle(this.snakeMove, this.level)(DirectionType.UP, this.snake); break;
-            case 40: Utils.throttle(this.snakeMove, this.level)(DirectionType.DOWN, this.snake); break;
-            case 37: Utils.throttle(this.snakeMove, this.level)(DirectionType.LEFT, this.snake); break;
-            case 39: Utils.throttle(this.snakeMove, this.level)(DirectionType.RIGHT, this.snake); break;
-        }
+            if (event.keyCode == 38) Utils.throttle(this.snakeMove, this.level)(DirectionType.UP, this.snake, this.drawingLayer);
+            if (event.keyCode == 40) Utils.throttle(this.snakeMove, this.level)(DirectionType.DOWN, this.snake, this.drawingLayer);
+            if (event.keyCode == 37) Utils.throttle(this.snakeMove, this.level)(DirectionType.LEFT, this.snake, this.drawingLayer);
+            if (event.keyCode == 39) Utils.throttle(this.snakeMove, this.level)(DirectionType.RIGHT, this.snake, this.drawingLayer);
     }
 
-    snakeMove(direction:DirectionType, snake:Snake) {
+    snakeMove(direction:DirectionType, snake:Snake, layer:Layer) {
         if (direction == DirectionType.UP) {
-            console.log(direction, snake.y)
-            while (snake.y > 0) snake.y -= 20
+            if (snake.y > 0) snake.y -= 30
         } else if (direction == DirectionType.DOWN) {
-            while (snake.y < Utils.FIELD_SIZE) snake.y += 20
+            if (snake.y < Utils.FIELD_SIZE) snake.y += 30
         } else if (direction == DirectionType.LEFT) {
-            while (snake.x > 0) snake.x -= 20
+            if (snake.x > 0) snake.x -= 30
         } else if (direction == DirectionType.RIGHT) {
-            while (snake.x < Utils.FIELD_SIZE) snake.x += 20
+            if (snake.x < Utils.FIELD_SIZE) snake.x += 30
         }
+        snake.rect.y(snake.y);
+        snake.rect.x(snake.x);
+        layer.batchDraw()
     }
 
 }
