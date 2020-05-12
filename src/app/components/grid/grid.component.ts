@@ -18,12 +18,13 @@ export class GridComponent implements OnInit {
     stage:Stage;
     config:StageConfig = {
         container: 'js-konva-stage',
-        width: 600,
-        height: 600
+        width: Utils.FIELD_SIZE,
+        height: Utils.FIELD_SIZE
     };
     tempLayer:Layer;
     drawingLayer:Layer;
     gridLayer:Layer;
+    level:number = 2000;
     snake:Snake = new Snake();
 
     constructor(private elRef:ElementRef) { }
@@ -87,7 +88,6 @@ export class GridComponent implements OnInit {
         eventVo.event = e;
         eventVo.type = type;
         this.mouseDownEvent(eventVo);
-        this.keyDownEvent(eventVo);
     }
 
     mouseDownEvent(event:EventVo) {
@@ -95,17 +95,25 @@ export class GridComponent implements OnInit {
     }
 
     keyDownEvent(event:any) {
-        console.log(event.event)
         switch (event.keyCode) {
-            case 38: this.snakeMove(DirectionType.UP); break;
-            case 40: this.snakeMove(DirectionType.DOWN); break;
-            case 37: this.snakeMove(DirectionType.LEFT); break;
-            case 39: this.snakeMove(DirectionType.RIGHT); break;
+            case 38: Utils.throttle(this.snakeMove, this.level)(DirectionType.UP, this.snake); break;
+            case 40: Utils.throttle(this.snakeMove, this.level)(DirectionType.DOWN, this.snake); break;
+            case 37: Utils.throttle(this.snakeMove, this.level)(DirectionType.LEFT, this.snake); break;
+            case 39: Utils.throttle(this.snakeMove, this.level)(DirectionType.RIGHT, this.snake); break;
         }
     }
 
-    snakeMove(direction:DirectionType) {
-        console.log(direction)
+    snakeMove(direction:DirectionType, snake:Snake) {
+        if (direction == DirectionType.UP) {
+            console.log(direction, snake.y)
+            while (snake.y > 0) snake.y -= 20
+        } else if (direction == DirectionType.DOWN) {
+            while (snake.y < Utils.FIELD_SIZE) snake.y += 20
+        } else if (direction == DirectionType.LEFT) {
+            while (snake.x > 0) snake.x -= 20
+        } else if (direction == DirectionType.RIGHT) {
+            while (snake.x < Utils.FIELD_SIZE) snake.x += 20
+        }
     }
 
 }
