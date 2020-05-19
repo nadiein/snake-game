@@ -15,16 +15,17 @@ export class Utils {
 
     static throttle(f:Function, ms:number) {
         let savedArgs, savedThis, tick;
-        return function wrapper(...args) {
+        let wrapper = function(...args) {
+            clearInterval(tick);
             savedArgs = args;
             savedThis = this;
             f.apply(savedThis, savedArgs);
-            clearInterval(tick);
             tick = setInterval(async() => {
                 await wrapper;
                 wrapper.apply(savedThis, savedArgs);
             }, ms);
         }
+        return wrapper;
     }
 }
 
