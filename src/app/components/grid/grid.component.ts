@@ -103,7 +103,6 @@ export class GridComponent implements OnInit {
 
     keyDownEvent(event:any) {
         clearInterval(this.tick);
-        this.startTime = Date.now();
         this.tick = setInterval(() => {
             this.snakeMove(event.keyCode, this.snake, this.drawingLayer);
         }, this.level)
