@@ -26,7 +26,7 @@ export class GridComponent implements OnInit {
     gridLayer:Layer;
     level:number = 2000;
     snake:Snake = new Snake();
-    tick:any;
+    tick:number;
 
     constructor(private elRef:ElementRef) { }
     
@@ -97,30 +97,32 @@ export class GridComponent implements OnInit {
 
     // activate if previous event != current evenet || current event == null
 
-    increaseDifficulty(previousTime:any) {
-        // TODO: finish methood to increase difficulty
+    increaseDifficulty(tick:number, defaultValue:number):number {
+        return
     }
 
     keyDownEvent(event:any) {
-        clearInterval(this.tick);
-        this.tick = setInterval(() => {
-            this.snakeMove(event.keyCode, this.snake, this.drawingLayer);
-        }, this.level)
+        this.snakeMove(event.keyCode, this.snake, this.drawingLayer);
     }
 
     snakeMove(direction:number, snake:Snake, layer:Layer) {
-        if (direction == 38) {
-            if (snake.y > 0) snake.y -= 30
-        } else if (direction == 40) {
-            if (snake.y < Utils.FIELD_SIZE) snake.y += 30
-        } else if (direction == 37) {
-            if (snake.x > 0) snake.x -= 30
-        } else if (direction == 39) {
-            if (snake.x < Utils.FIELD_SIZE) snake.x += 30
-        }
-        snake.rect.y(snake.y);
-        snake.rect.x(snake.x);
-        layer.batchDraw();
+        setInterval(() => {
+            if (direction == 38) {
+                if (snake.y > 0) snake.y -= 30
+                snake.rect.y(snake.y);
+            } else if (direction == 40) {
+                if (snake.y < Utils.FIELD_SIZE) snake.y += 30
+                snake.rect.y(snake.y);
+            } else if (direction == 37) {
+                if (snake.x > 0) snake.x -= 30
+                snake.rect.x(snake.x);
+            } else if (direction == 39) {
+                if (snake.x < Utils.FIELD_SIZE) snake.x += 30
+                snake.rect.x(snake.x);
+            }
+            layer.batchDraw();
+            this.tick++;
+        }, this.level)
     }
 
 }
