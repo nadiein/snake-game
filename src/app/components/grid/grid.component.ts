@@ -2,7 +2,7 @@ import { Component, OnInit, ElementRef, HostListener } from '@angular/core';
 import 'konva';
 import { Stage, StageConfig } from 'konva/types/Stage';
 import { Layer } from 'konva/types/Layer';
-import { EventType, EventVo } from './grid.model';
+import { EventType, EventVo, GridCreator } from './grid.model';
 import { Snake } from '../snake/snake.model';
 import { Utils, DirectionType } from '../utils/utils';
 
@@ -47,29 +47,37 @@ export class GridComponent implements OnInit {
 
     drawGird() {
         this.gridLayer.destroyChildren();
-        let width = Utils.FIELD_SIZE;
-        let height = Utils.FIELD_SIZE;
-        let step = Utils.GRID_SIZE;
-        let linesOnAxisX = Math.ceil(width - step / step);
-        let linesOnAxisY = Math.ceil(height - step / step);
-        let stroke = '#ddd';
+        // let width = Utils.FIELD_SIZE;
+        // let height = Utils.FIELD_SIZE;
+        // let step = Utils.GRID_SIZE;
+        // let linesOnAxisX = Math.ceil(width - step / step);
+        // let linesOnAxisY = Math.ceil(height - step / step);
+        // let stroke = '#ddd';
+        // let x, y;
+        // for (let i = 0; i < linesOnAxisX; i++) {
+        //     x = new Konva.Line({
+        //         points: [Math.ceil(i * step), 0, Math.ceil(i * step), height],
+        //         stroke: stroke,
+        //         strokeWidth: 1,
+        //     })
+        //     this.gridLayer.add(x);
+        // }
 
-        for (let i = 0; i < linesOnAxisX; i++) {
-            this.gridLayer.add(new Konva.Line({
-                points: [Math.ceil(i * step), 0, Math.ceil(i * step), height],
-                stroke: stroke,
-                strokeWidth: 1,
-            }));
-        }
-
-        for (let j = 0; j < linesOnAxisY; j++) {
-            this.gridLayer.add(new Konva.Line({
-                points: [0, Math.ceil(j * step), width, Math.ceil(j * step)],
-                stroke: stroke,
-                strokeWidth: 1,
-            }));
-        }
-
+        // for (let j = 0; j < linesOnAxisY; j++) {
+        //     y = new Konva.Line({
+        //         points: [0, Math.ceil(j * step), width, Math.ceil(j * step)],
+        //         stroke: stroke,
+        //         strokeWidth: 1,
+        //     })
+        //     this.gridLayer.add(y);
+        // }
+        // console.log(this.gridLayer)
+        let builder = new GridCreator();
+        let x = new Konva.Line(builder.grid.x);
+        let y = new Konva.Line(builder.grid.y)
+        console.log(this.gridLayer)
+        this.gridLayer.add(x);
+        this.gridLayer.add(y);
         this.gridLayer.draw();
     }
 
@@ -88,14 +96,7 @@ export class GridComponent implements OnInit {
         let eventVo = new EventVo();
         eventVo.event = e;
         eventVo.type = type;
-        this.mouseDownEvent(eventVo);
     }
-
-    mouseDownEvent(event:EventVo) {
-        // console.log(event)
-    }
-
-    // activate if previous event != current evenet || current event == null
 
     increaseDifficulty(tick:number, defaultValue:number):number {
         return
@@ -123,6 +124,10 @@ export class GridComponent implements OnInit {
             layer.batchDraw();
             this.tick++;
         }, this.level)
+    }
+
+    addFoodForSnakeOnGrid() {
+        
     }
 
 }
