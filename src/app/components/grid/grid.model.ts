@@ -17,29 +17,28 @@ export class GridCreator {
     createGrid() {
         let linesOnAxisX = Math.ceil(this.width - this.step / this.step);
         let linesOnAxisY = Math.ceil(this.height - this.step / this.step);
-        console.log(linesOnAxisX, linesOnAxisY)
 
         for (let i = 0; i < linesOnAxisX; i++) {
-            this.grid.x = {
+            this.grid.x.push({
                 points: [Math.ceil(i * this.step), 0, Math.ceil(i * this.step), this.height],
                 stroke: this.strokeColor,
                 strokeWidth: this.strokeWidth,
-            };
+            });
         }
 
         for (let j = 0; j < linesOnAxisY; j++) {
-            this.grid.y = {
+            this.grid.y.push({
                 points: [0, Math.ceil(j * this.step), this.width, Math.ceil(j * this.step)],
                 stroke: this.strokeColor,
                 strokeWidth: this.strokeWidth,
-            };
+            });
         }
     }
 }
 
 export class Grid {
-    x:any = null;
-    y:any = null;
+    x:any[] = [];
+    y:any[] = [];
 }
 
 export enum EventType {

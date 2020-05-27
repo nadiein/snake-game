@@ -73,11 +73,8 @@ export class GridComponent implements OnInit {
         // }
         // console.log(this.gridLayer)
         let builder = new GridCreator();
-        let x = new Konva.Line(builder.grid.x);
-        let y = new Konva.Line(builder.grid.y)
-        console.log(this.gridLayer)
-        this.gridLayer.add(x);
-        this.gridLayer.add(y);
+        builder.grid.x.map(i => this.gridLayer.add(new Konva.Line(i)))
+        builder.grid.y.map(i => this.gridLayer.add(new Konva.Line(i)))
         this.gridLayer.draw();
     }
 
