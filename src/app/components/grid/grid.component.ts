@@ -24,9 +24,10 @@ export class GridComponent implements OnInit {
     tempLayer:Layer;
     drawingLayer:Layer;
     gridLayer:Layer;
-    level:number = 2000;
+    level:number = 1000;
     snake:Snake = new Snake();
-    tick:number;
+    tick:number = 0;
+    interval:any;
 
     constructor(private elRef:ElementRef) { }
     
@@ -47,31 +48,6 @@ export class GridComponent implements OnInit {
 
     drawGird() {
         this.gridLayer.destroyChildren();
-        // let width = Utils.FIELD_SIZE;
-        // let height = Utils.FIELD_SIZE;
-        // let step = Utils.GRID_SIZE;
-        // let linesOnAxisX = Math.ceil(width - step / step);
-        // let linesOnAxisY = Math.ceil(height - step / step);
-        // let stroke = '#ddd';
-        // let x, y;
-        // for (let i = 0; i < linesOnAxisX; i++) {
-        //     x = new Konva.Line({
-        //         points: [Math.ceil(i * step), 0, Math.ceil(i * step), height],
-        //         stroke: stroke,
-        //         strokeWidth: 1,
-        //     })
-        //     this.gridLayer.add(x);
-        // }
-
-        // for (let j = 0; j < linesOnAxisY; j++) {
-        //     y = new Konva.Line({
-        //         points: [0, Math.ceil(j * step), width, Math.ceil(j * step)],
-        //         stroke: stroke,
-        //         strokeWidth: 1,
-        //     })
-        //     this.gridLayer.add(y);
-        // }
-        // console.log(this.gridLayer)
         let builder = new GridCreator();
         builder.grid.x.map(i => this.gridLayer.add(new Konva.Line(i)))
         builder.grid.y.map(i => this.gridLayer.add(new Konva.Line(i)))
@@ -95,16 +71,28 @@ export class GridComponent implements OnInit {
         eventVo.type = type;
     }
 
-    increaseDifficulty(tick:number, defaultValue:number):number {
-        return
+    increaseDifficulty() {
+        const multiplicator = 100, decreaser = 400;
+
+        if (this.tick * multiplicator == this.level && this.level > 400) {
+            this.level -= decreaser;
+            this.tick = 0;
+        }
+    }
+
+    increaseSnakeLength() {
+        if (this.tick == 10 && this.snake.length < 10) {
+            this.snake.length += 1;
+        }
     }
 
     keyDownEvent(event:any) {
+        clearInterval(this.interval);
         this.snakeMove(event.keyCode, this.snake, this.drawingLayer);
     }
 
     snakeMove(direction:number, snake:Snake, layer:Layer) {
-        setInterval(() => {
+        this.interval = setInterval(() => {
             if (direction == 38) {
                 if (snake.y > 0) snake.y -= 30
                 snake.rect.y(snake.y);
@@ -120,6 +108,9 @@ export class GridComponent implements OnInit {
             }
             layer.batchDraw();
             this.tick++;
+            this.increaseDifficulty();
+            this.increaseSnakeLength();
+            console.log(this.snake.length)
         }, this.level)
     }
 
