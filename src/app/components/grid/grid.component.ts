@@ -79,41 +79,61 @@ export class GridComponent implements OnInit {
             this.level -= decreaser;
             
             clearInterval(this.interval);
-            this.snakeMove(this.direction, this.snake, this.drawingLayer);
+            this.snakeMove(this.snake, this.drawingLayer);
         }
     }
 
     increaseSnakeLength() {
-        if (this.snake.length < 10) this.snake.length += 1;
+        let snake = this.snake;
+        if (snake.length < 10) {
+            switch (snake.direction) {
+                // TODO finish setting new rect to x/y to snake by it\'s last direction and depends on length
+                case DirectionType.UP: {
+
+                }
+                case DirectionType.DOWN: {
+
+                }
+
+                case DirectionType.LEFT: {
+
+                }
+                case DirectionType.RIGHT: {
+
+                }
+            }
+            snake.length += 1;
+        }
     }
 
     keyDownEvent(event:any) {
+        let snake = this.snake;
         if (event.keyCode == 38) {
-            this.direction = DirectionType.UP;
+            snake.direction = DirectionType.UP;
         } else if (event.keyCode == 40) {
-            this.direction = DirectionType.DOWN;
+            snake.direction = DirectionType.DOWN;
         } else if (event.keyCode == 37) {
-            this.direction = DirectionType.LEFT;
+            snake.direction = DirectionType.LEFT;
         } else if (event.keyCode == 39) {
-            this.direction = DirectionType.RIGHT;
+            snake.direction = DirectionType.RIGHT;
         }
 
         clearInterval(this.interval);
-        this.snakeMove(this.direction, this.snake, this.drawingLayer);
+        this.snakeMove(snake, this.drawingLayer);
     }
 
-    snakeMove(direction:number, snake:Snake, layer:Layer) {
+    snakeMove(snake:Snake, layer:Layer) {
         this.interval = setInterval(() => {
-            if (direction == DirectionType.UP) {
+            if (snake.direction == DirectionType.UP) {
                 if (snake.y > 0) snake.y -= 30
                 snake.rect.y(snake.y);
-            } else if (direction == DirectionType.DOWN) {
+            } else if (snake.direction == DirectionType.DOWN) {
                 if (snake.y < Utils.FIELD_SIZE) snake.y += 30
                 snake.rect.y(snake.y);
-            } else if (direction == DirectionType.LEFT) {
+            } else if (snake.direction == DirectionType.LEFT) {
                 if (snake.x > 0) snake.x -= 30
                 snake.rect.x(snake.x);
-            } else if (direction == DirectionType.RIGHT) {
+            } else if (snake.direction == DirectionType.RIGHT) {
                 if (snake.x < Utils.FIELD_SIZE) snake.x += 30
                 snake.rect.x(snake.x);
             }
