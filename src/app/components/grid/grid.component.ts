@@ -5,6 +5,7 @@ import { Layer } from 'konva/types/Layer';
 import { EventType, EventVo, GridCreator } from './grid.model';
 import { Snake } from '../snake/snake.model';
 import { Utils, DirectionType } from '../utils/utils';
+import { FoodModel } from '../food/food.model';
 
 declare const Konva:any;
 
@@ -24,8 +25,11 @@ export class GridComponent implements OnInit {
     tempLayer:Layer;
     drawingLayer:Layer;
     gridLayer:Layer;
+    foodLayer:Layer;
     level:number = 1000;
     snake:Snake = new Snake();
+    snakes:Snake[] = [];
+    food:FoodModel = new FoodModel();
     direction:number;
     tick:number = 0;
     interval:any;
@@ -38,12 +42,15 @@ export class GridComponent implements OnInit {
         this.tempLayer = new Konva.Layer();
         this.drawingLayer = new Konva.Layer();
         this.gridLayer = new Konva.Layer();
+        this.foodLayer = new Konva.Layer();
         this.stage.add(this.tempLayer);
         this.stage.add(this.drawingLayer);
         this.stage.add(this.gridLayer);
+        this.stage.add(this.foodLayer);
 
         this.drawGird();
         this.drawSnake();
+        this.drawFood();
         this.initStageEvents();
     }
 
@@ -60,6 +67,14 @@ export class GridComponent implements OnInit {
         this.snake.y = Utils.getRandomPositionCoords(20).y;
         this.drawingLayer.add(this.snake.rect);
         this.drawingLayer.batchDraw();
+    }
+
+    drawFood() {
+        this.food
+        this.food.x = Utils.getRandomPositionCoords(20).x;
+        this.food.y = Utils.getRandomPositionCoords(20).y;
+        this.foodLayer.add(this.food.rect);
+        this.foodLayer.batchDraw();
     }
 
     initStageEvents() {
@@ -89,7 +104,7 @@ export class GridComponent implements OnInit {
             switch (snake.direction) {
                 // TODO finish setting new rect to x/y to snake by it\'s last direction and depends on length
                 case DirectionType.UP: {
-
+                    this.snakes.push(this.snake)
                 }
                 case DirectionType.DOWN: {
 
@@ -120,21 +135,34 @@ export class GridComponent implements OnInit {
 
         clearInterval(this.interval);
         this.snakeMove(snake, this.drawingLayer);
+        for (let snake of this.snakes) {
+
+        }
     }
 
     snakeMove(snake:Snake, layer:Layer) {
         this.interval = setInterval(() => {
+            if (snake.y < 0) snake.y = Utils.FIELD_SIZE;
+            else if (snake.y > Utils.FIELD_SIZE - 30) snake.y = -30;
+            else if (snake.x < 0) snake.x = Utils.FIELD_SIZE;
+            else if (snake.x > Utils.FIELD_SIZE - 30) snake.x = -30;
+
+            if (this.snake.x === this.food.x && this.snake.y === this.food.y) {
+                this.foodLayer.removeChildren();
+                this.drawFood();
+            }
+            
             if (snake.direction == DirectionType.UP) {
-                if (snake.y > 0) snake.y -= 30
+                snake.y -= 30;
                 snake.rect.y(snake.y);
             } else if (snake.direction == DirectionType.DOWN) {
-                if (snake.y < Utils.FIELD_SIZE) snake.y += 30
+                snake.y += 30;
                 snake.rect.y(snake.y);
             } else if (snake.direction == DirectionType.LEFT) {
-                if (snake.x > 0) snake.x -= 30
+                snake.x -= 30;
                 snake.rect.x(snake.x);
             } else if (snake.direction == DirectionType.RIGHT) {
-                if (snake.x < Utils.FIELD_SIZE) snake.x += 30
+                snake.x += 30;
                 snake.rect.x(snake.x);
             }
             layer.batchDraw();
@@ -142,14 +170,9 @@ export class GridComponent implements OnInit {
 
             if (this.tick == 5) {
                 this.increaseDifficulty();
-                this.increaseSnakeLength();
                 this.tick = 0;
             }
         }, this.level)
-    }
-
-    addFoodForSnakeOnGrid() {
-        
     }
 
 }
