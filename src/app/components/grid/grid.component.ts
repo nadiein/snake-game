@@ -101,23 +101,12 @@ export class GridComponent implements OnInit {
     increaseSnakeLength() {
         let snake = this.snake;
         if (snake.length < 10) {
-            switch (snake.direction) {
-                // TODO finish setting new rect to x/y to snake by it\'s last direction and depends on length
-                case DirectionType.UP: {
-                    this.snakes.push(this.snake)
-                }
-                case DirectionType.DOWN: {
-
-                }
-
-                case DirectionType.LEFT: {
-
-                }
-                case DirectionType.RIGHT: {
-
-                }
-            }
             snake.length += 1;
+            
+            for (let tail of snake.body) {
+                this.drawingLayer.add(tail);
+            }
+            this.drawingLayer.batchDraw();
         }
     }
 
@@ -135,9 +124,6 @@ export class GridComponent implements OnInit {
 
         clearInterval(this.interval);
         this.snakeMove(snake, this.drawingLayer);
-        for (let snake of this.snakes) {
-
-        }
     }
 
     snakeMove(snake:Snake, layer:Layer) {
@@ -148,6 +134,7 @@ export class GridComponent implements OnInit {
             else if (snake.x > Utils.FIELD_SIZE - 30) snake.x = -30;
 
             if (this.snake.x === this.food.x && this.snake.y === this.food.y) {
+                this.increaseSnakeLength();
                 this.foodLayer.removeChildren();
                 this.drawFood();
             }
