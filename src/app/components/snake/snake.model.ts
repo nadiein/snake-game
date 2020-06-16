@@ -10,6 +10,7 @@ export class Snake {
     size:number = 30;
     direction:number;
     length:number = 0;
+    changeDirectionCoord:{x:number, y:number} = {x:0, y:0};
     body:Rect[] = [];
 
     get rect():Rect { return this._rect.setAttrs({ x:this._x, y:this._y, width:this.size, height:this.size, fill:'#ddd' }) }

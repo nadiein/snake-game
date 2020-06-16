@@ -134,7 +134,9 @@ export class GridComponent implements OnInit {
             else if (snake.x < 0) snake.x = Utils.FIELD_SIZE;
             else if (snake.x > Utils.FIELD_SIZE - 30) snake.x = -30;
 
-            if (this.snake.x === this.food.x && this.snake.y === this.food.y) {
+            if (snake.x === this.food.x && snake.y === this.food.y) {
+                snake.changeDirectionCoord.x = snake.x;
+                snake.changeDirectionCoord.y = snake.y;
                 this.increaseSnakeLength();
                 this.foodLayer.removeChildren();
                 this.drawFood();
