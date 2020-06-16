@@ -3,7 +3,7 @@ import 'konva';
 import { Stage, StageConfig } from 'konva/types/Stage';
 import { Layer } from 'konva/types/Layer';
 import { EventType, EventVo, GridCreator } from './grid.model';
-import { Snake } from '../snake/snake.model';
+import { Snake, Direction } from '../snake/snake.model';
 import { Utils, DirectionType } from '../utils/utils';
 import { FoodModel } from '../food/food.model';
 
@@ -103,9 +103,10 @@ export class GridComponent implements OnInit {
         if (snake.length < 10) {
             snake.length += 1;
             
-            for (let tail of snake.body) {
-                this.drawingLayer.add(tail);
-            }
+            let rect = new Konva.Rect();
+            rect.setAttrs({ width:snake.size, height:snake.size, fill:'#ddd' })
+            snake.body.push(rect);
+            this.drawingLayer.add(rect);
             this.drawingLayer.batchDraw();
         }
     }
@@ -152,6 +153,7 @@ export class GridComponent implements OnInit {
                 snake.x += 30;
                 snake.rect.x(snake.x);
             }
+            snake.setBodyRectPosition();
             layer.batchDraw();
             this.tick++;
 
